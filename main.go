@@ -1,20 +1,32 @@
 package main
 
 import (
-	"log"
+	"bufio"
+	"fmt"
 	"os"
-	"text/template"
+	"strings"
 )
 
-var tpl *template.Template
-
-func init() {
-	tpl = template.Must(template.ParseFiles("tpl.gohtml"))
-}
+// To pipeliene the output into a html file, type this command "go run main.go > index.html", here the ouput will in a file namedindex.html
 
 func main() {
-	err := tpl.ExecuteTemplate(os.Stdout, "tpl.gohtml", 42)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	reader := bufio.NewReader(os.Stdin)
+
+	text, _ := reader.ReadString('\n')
+	// convert CRLF to LF
+	text = strings.Replace(text, "\n", "", -1)
+
+	tpl := `
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<title>Hello World!</title>
+	</head>
+	<body>
+	<h1>` + text + `</h1>
+	</body>
+	</html>
+	`
+	fmt.Println(tpl)
 }
